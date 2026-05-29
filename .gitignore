@@ -1,0 +1,24 @@
+# .NET build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+.vs/
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Test / report output
+TestResults/
+*.trx
+test-report*.xml
+junittests.xml
+vstest.log*
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/

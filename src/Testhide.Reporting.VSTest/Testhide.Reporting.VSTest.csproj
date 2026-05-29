@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- CRITICAL: VSTest only discovers extension assemblies whose file name ends with
+         *.TestAdapter.dll or *.TestLogger.dll. The DLL MUST be named *.TestLogger.dll or the
+         "testhide" logger is silently filtered out ("Could not find a test logger ..."). -->
+    <AssemblyName>Testhide.TestLogger</AssemblyName>
+
+    <PackageId>Testhide.Reporting.VSTest</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>thuesdays</Authors>
+    <Description>VSTest logger that emits Testhide Report Format v1 from `dotnet test` — works for xUnit, NUnit and MSTest. Enable with: dotnet test --logger "testhide;LogFilePath=junittests.xml".</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/thuesdays/testhide-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thuesdays/testhide-dotnet</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>testhide;vstest;logger;junit;xunit;nunit;mstest;dotnet-test;reporting</PackageTags>
+
+    <!-- The logger DLL (+ Core) must land in the consuming test project's output so VSTest
+         discovers the "testhide" logger. ObjectModel is provided by the test host at runtime,
+         so reference it for compile only (don't ship it). -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile against ObjectModel, but do NOT copy it to the consumer's test output —
+         the test host provides its own version and a duplicate makes the logger fail to load
+         (silently "logger not found"). This is the standard VSTest-logger packaging pattern. -->
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.11.1" ExcludeAssets="runtime" />
+    <ProjectReference Include="..\Testhide.Reporting.Core\Testhide.Reporting.Core.csproj" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

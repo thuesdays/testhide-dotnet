@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-conform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            8.0.x
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build logger + core
+        run: dotnet build src/Testhide.Reporting.VSTest/Testhide.Reporting.VSTest.csproj -c Release
+
+      - name: Build sample
+        run: dotnet build tests/SampleTests/SampleTests.csproj -c Release
+
+      - name: Run sample under the testhide logger
+        # The sample has an intentional failing test, so `dotnet test` exits non-zero —
+        # the gate is the emitted report's conformance, validated below.
+        run: >
+          dotnet test tests/SampleTests/SampleTests.csproj -c Release --no-build
+          --logger "testhide;LogFilePath=${{ github.workspace }}/sample-report.xml" || true
+
+      - name: Validate emitted report (conformance gate)
+        run: python conformance/validate_report.py "${{ github.workspace }}/sample-report.xml"
+
+      - name: Validate golden fixture
+        run: python conformance/validate_report.py conformance/golden_report.xml
+
+      - name: Pack (smoke)
+        run: |
+          dotnet pack src/Testhide.Reporting.Core/Testhide.Reporting.Core.csproj -c Release -o artifacts
+          dotnet pack src/Testhide.Reporting.VSTest/Testhide.Reporting.VSTest.csproj -c Release -o artifacts

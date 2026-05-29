@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <PackageId>Testhide.Reporting.Core</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>thuesdays</Authors>
+    <Description>Shared writer for the Testhide Report Format v1 (JUnit-extended). Used by the Testhide .NET test logger.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/thuesdays/testhide-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thuesdays/testhide-dotnet</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>
