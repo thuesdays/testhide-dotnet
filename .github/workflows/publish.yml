@@ -1,16 +1,25 @@
 name: Publish to NuGet
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g. 0.1.0)'
+      bump:
+        description: 'Version bump type'
         required: true
-        type: string
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Push to main auto-publishes a patch bump; skip the bot's own bump commit to avoid a loop.
+    if: "github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'chore: bump version')"
     permissions:
       contents: write
     steps:
@@ -36,11 +45,31 @@ jobs:
           python conformance/validate_report.py "${{ github.workspace }}/sample-report.xml"
           python conformance/validate_report.py conformance/golden_report.xml
 
+      - name: Bump version
+        id: bump
+        run: |
+          BUMP_TYPE="${{ github.event.inputs.bump || 'patch' }}"
+          CURRENT=$(grep -oP '<Version>\K[^<]+' src/Testhide.Reporting.Core/Testhide.Reporting.Core.csproj | head -1)
+          echo "Current version: $CURRENT"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          case "$BUMP_TYPE" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "New version: $NEW_VERSION"
+          # Keep every packable project's <Version> in lockstep.
+          grep -rl "<Version>$CURRENT</Version>" src --include=*.csproj | while read -r f; do
+            sed -i "s|<Version>$CURRENT</Version>|<Version>$NEW_VERSION</Version>|" "$f"
+          done
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Pack all packages (Core, VSTest logger, xUnit/NUnit/MSTest)
         run: |
-          V="${{ github.event.inputs.version }}"
+          rm -rf artifacts
           for proj in src/*/*.csproj; do
-            dotnet pack "$proj" -c Release -o artifacts -p:Version=$V
+            dotnet pack "$proj" -c Release -o artifacts -p:Version=${{ steps.bump.outputs.version }}
           done
 
       - name: Push to NuGet
@@ -48,9 +77,11 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: dotnet nuget push "artifacts/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
-      - name: Tag release
+      - name: Commit version bump + tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "v${{ github.event.inputs.version }}"
-          git push origin "v${{ github.event.inputs.version }}"
+          git add src/*/*.csproj
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version }}"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin main --tags
