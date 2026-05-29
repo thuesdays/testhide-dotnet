@@ -8,7 +8,7 @@ they all run through `dotnet test`. Output is identical to the
 [`testhide-pytest-plugin`](https://github.com/thuesdays/testhide-pytest-plugin) contract
 (`fail_id`, `test_resolution`, `<system-out>`, suite metadata, `testhide_schema_version=1`).
 Canonical spec:
-[Testhide Report Format v1](https://github.com/thuesdays/testhide/blob/main/docs/specs/REPORT-FORMAT-V1.md).
+[Testhide Report Format v1](https://testhide.com/plugins/report-format/).
 
 ## Packages
 
@@ -88,8 +88,9 @@ logger + validator), packs **all** `src/` packages, and pushes them to NuGet.
 NUGET_API_KEY=...      # https://www.nuget.org/account/apikeys  (scope: Testhide.Reporting.*)
 ```
 
-**CI publish (GitHub Actions):** run the *Publish to NuGet* workflow (manual `workflow_dispatch`,
-pass the version). Required repository secret:
+**CI publish (GitHub Actions):** pushing to `main` auto-publishes (conformance gate → patch bump
+across all packages → NuGet → GitHub Release with `.nupkg` artifacts; loop-guarded). Required
+repository secret:
 - `NUGET_API_KEY`.
 
 ## License
