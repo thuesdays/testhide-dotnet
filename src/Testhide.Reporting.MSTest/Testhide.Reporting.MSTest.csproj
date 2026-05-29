@@ -10,7 +10,7 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
 
     <PackageId>Testhide.Reporting.MSTest</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <Authors>thuesdays</Authors>
     <Description>Convenience package for MSTest: installs the Testhide VSTest logger. Run: dotnet test --logger "testhide;LogFilePath=junittests.xml".</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

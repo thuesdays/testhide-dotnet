@@ -7,7 +7,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
 
     <PackageId>Testhide.Reporting.Core</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <Authors>thuesdays</Authors>
     <Description>Shared writer for the Testhide Report Format v1 (JUnit-extended). Used by the Testhide .NET test logger.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
