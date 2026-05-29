@@ -6,6 +6,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <!-- Dependency-only meta-package (no lib/) — NU5128 is expected and benign here. -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
 
     <PackageId>Testhide.Reporting.MSTest</PackageId>
     <Version>0.1.0</Version>
