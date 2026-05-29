@@ -36,7 +36,7 @@ jobs:
           python conformance/validate_report.py "${{ github.workspace }}/sample-report.xml"
           python conformance/validate_report.py conformance/golden_report.xml
 
-      - name: Pack (all packages: Core, VSTest logger, xUnit/NUnit/MSTest meta-packages)
+      - name: Pack all packages (Core, VSTest logger, xUnit/NUnit/MSTest)
         run: |
           V="${{ github.event.inputs.version }}"
           for proj in src/*/*.csproj; do
