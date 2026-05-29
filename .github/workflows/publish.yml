@@ -36,11 +36,12 @@ jobs:
           python conformance/validate_report.py "${{ github.workspace }}/sample-report.xml"
           python conformance/validate_report.py conformance/golden_report.xml
 
-      - name: Pack
+      - name: Pack (all packages: Core, VSTest logger, xUnit/NUnit/MSTest meta-packages)
         run: |
           V="${{ github.event.inputs.version }}"
-          dotnet pack src/Testhide.Reporting.Core/Testhide.Reporting.Core.csproj   -c Release -o artifacts -p:Version=$V
-          dotnet pack src/Testhide.Reporting.VSTest/Testhide.Reporting.VSTest.csproj -c Release -o artifacts -p:Version=$V
+          for proj in src/*/*.csproj; do
+            dotnet pack "$proj" -c Release -o artifacts -p:Version=$V
+          done
 
       - name: Push to NuGet
         env:

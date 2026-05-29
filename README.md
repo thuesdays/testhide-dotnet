@@ -14,11 +14,16 @@ Canonical spec:
 
 | Package | Purpose |
 |---|---|
-| `Testhide.Reporting.VSTest` | the `dotnet test` logger (FriendlyName `testhide`) |
+| `Testhide.Reporting.VSTest` | the `dotnet test` logger (FriendlyName `testhide`) — this is all you need |
 | `Testhide.Reporting.Core` | shared report writer (pulled in automatically) |
+| `Testhide.Reporting.Xunit` | convenience meta-package (depends on VSTest) for discoverability |
+| `Testhide.Reporting.NUnit` | convenience meta-package (depends on VSTest) |
+| `Testhide.Reporting.MSTest` | convenience meta-package (depends on VSTest) |
 
-> The single VSTest logger covers xUnit / NUnit / MSTest. Per-framework packages are unnecessary
-> on .NET because VSTest is the common integration point.
+> The single VSTest logger covers xUnit / NUnit / MSTest — it's the only one you technically need.
+> The per-framework packages are thin meta-packages (no code; they just depend on
+> `Testhide.Reporting.VSTest`) provided purely for discoverability, e.g. `dotnet add package
+> Testhide.Reporting.Xunit`.
 
 ## Install & use
 
@@ -67,6 +72,25 @@ pwsh scripts/build.ps1      # or: bash scripts/build.sh
 ```
 Builds, runs the xUnit sample under the logger, validates the report, and packs both NuGet packages
 into `artifacts/`.
+
+## Publishing (maintainers)
+
+**Local publish (Windows):**
+```bat
+copy .env.local.example .env.local   :: then edit .env.local and add NUGET_API_KEY
+publish.bat
+```
+`publish.bat` loads `.env.local` (gitignored), runs the conformance gate (sample run through the
+logger + validator), packs **all** `src/` packages, and pushes them to NuGet.
+
+`.env.local`:
+```
+NUGET_API_KEY=...      # https://www.nuget.org/account/apikeys  (scope: Testhide.Reporting.*)
+```
+
+**CI publish (GitHub Actions):** run the *Publish to NuGet* workflow (manual `workflow_dispatch`,
+pass the version). Required repository secret:
+- `NUGET_API_KEY`.
 
 ## License
 

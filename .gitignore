@@ -11,10 +11,14 @@ obj/
 *.nupkg
 *.snupkg
 
+# Secrets / local publish env
+.env.local
+
 # Test / report output
 TestResults/
 *.trx
 test-report*.xml
+sample-report.xml
 junittests.xml
 vstest.log*
 

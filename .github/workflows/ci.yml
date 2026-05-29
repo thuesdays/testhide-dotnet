@@ -42,7 +42,6 @@ jobs:
       - name: Validate golden fixture
         run: python conformance/validate_report.py conformance/golden_report.xml
 
-      - name: Pack (smoke)
+      - name: Pack (smoke — all packages)
         run: |
-          dotnet pack src/Testhide.Reporting.Core/Testhide.Reporting.Core.csproj -c Release -o artifacts
-          dotnet pack src/Testhide.Reporting.VSTest/Testhide.Reporting.VSTest.csproj -c Release -o artifacts
+          for proj in src/*/*.csproj; do dotnet pack "$proj" -c Release -o artifacts; done

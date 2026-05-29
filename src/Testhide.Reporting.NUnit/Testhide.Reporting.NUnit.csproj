@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Convenience meta-package for NUnit users. Ships no code — pulls in the
+       framework-agnostic Testhide.Reporting.VSTest logger. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+
+    <PackageId>Testhide.Reporting.NUnit</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>thuesdays</Authors>
+    <Description>Convenience package for NUnit: installs the Testhide VSTest logger. Run: dotnet test --logger "testhide;LogFilePath=junittests.xml".</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/thuesdays/testhide-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thuesdays/testhide-dotnet</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>testhide;nunit;vstest;logger;junit;reporting</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Testhide.Reporting.VSTest\Testhide.Reporting.VSTest.csproj" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>
