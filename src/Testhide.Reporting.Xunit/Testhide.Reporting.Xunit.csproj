@@ -11,7 +11,7 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
 
     <PackageId>Testhide.Reporting.Xunit</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>thuesdays</Authors>
     <Description>Convenience package for xUnit: installs the Testhide VSTest logger. Run: dotnet test --logger "testhide;LogFilePath=junittests.xml".</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
